@@ -1,15 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PrimeVue + CDN</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-    <div class="header">
-        <div class="logo">🌍</div>
-        <div class="title">JLEARN</div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/primevue/umd/primevue.min.js"></script>
+    <script src="https://unpkg.com/@primevue/themes/umd/aura.min.js"></script>
+    <script src="./service.js"></script>
+
+    <div id="app">
+        <p-datepicker v-model="date"></p-datepicker>
+        <br /><br />
+        {{ date }}
+        <p-datatable ref="dt" :value="products" table-style="min-width: 50rem" show-gridlines size="small" paginator
+            :rows="5" :rows-per-page-options="[2, 5, 10, 20, 50]" removable-sort
+            paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+            current-page-report-template="第{currentPage}/ {totalRecords}頁
+            ({first} 到 {last}) " v-model:selection="selectedProduct" selection-mode="multiple" dataKey="id">
+            <template #header>
+                <div class="text-end pb-4">
+                    <p-button icon="icon-down-small" size="small" label="輸出CSV" @click="exportCSV($event)" />
+                </div>
+            </template>
+            <p-column sortable field="name" header="name"></p-column>
+            <p-column sortable field="part" header="part"></p-column>
+            <p-column sortable field="code" header="code"></p-column>
+            <p-column sortable field="typing" header="typing"></p-column>
+        </p-datatable>
+        <p-button @click="confirm1()" label="Save" outlined></p-button>
+        <p-toast />
     </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+        const { gotData } = Service;
+        const { useToast } = PrimeVue;
+
+        const app = createApp({
+            setup() {
+                const date = ref();
+                const products = ref();
+                const selectedProduct = ref();
+                onMounted(() => {
+                    gotData('./file.json', products)
+                })
+                const dt = ref();
+                const exportCSV = () => {
+                    dt.value.exportCSV();
+                };
+                const toast = useToast();
+                const confirm1 = () => {
+                    console.log(1);
+                    toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content', life: 3000 });
+                };
+
+                return {
+                    date, products, selectedProduct, confirm1, exportCSV, dt
+                };
+            },
+            mounted() {
+                console.log("mounted(): from Options API")
+            }
+
+        });
+
+        app.use(PrimeVue.Config, {
+            theme: {
+                preset: PrimeVue.Themes.Aura
+            }
+        });
+
+        // PrimeVue.DataTable.extends.props.showGridlines.default = true
+        app.component('p-datepicker', PrimeVue.DatePicker);
+        app.component('p-datatable', PrimeVue.DataTable);
+        app.component('p-column', PrimeVue.Column);
+        app.component('p-toast', PrimeVue.Toast);
+        app.component('p-button', PrimeVue.Button);
+        app.use(PrimeVue.ToastService);
+
+        app.mount('#app');
+    </script>
 </body>
+
 </html>
