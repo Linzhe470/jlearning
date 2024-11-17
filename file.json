@@ -1,0 +1,39 @@
+[
+    {
+        "id": 1,
+        "name": "あ",
+        "part": "ア",
+        "typing": "a",
+        "code": "a"
+    },
+    {
+        "id": 2,
+        "name": "い",
+        "part": "イ",
+        "typing": "i",
+        "code": "i"
+    },
+    {
+        "id": 3,
+        "name": "う",
+        "part": "ウ",
+        "typing": "u",
+        "code": "u"
+    },
+    {
+        "id": 4,
+        "name": "え",
+        "part": "エ",
+        "typing": "e",
+        "code": "e"
+    },
+    {
+        "id": 5,
+        "name": "お",
+        "part": "オ",
+        "typing": "o",
+        "code": "o"
+    }
+]
+
+
